@@ -14,6 +14,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 2rem;
 }
 
 .logo {
@@ -30,6 +31,47 @@
     color: rgba(255, 255, 255, 0.9);
     margin: 0.25rem 0 0 0;
     font-weight: 300;
+  }
+}
+
+.navigation {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+}
+
+.navLinks {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.navLink {
+  background: rgba(255, 255, 255, 0.15);
+  border: none;
+  color: white;
+  padding: 0.6rem 1.2rem;
+  border-radius: 20px;
+  font-size: 0.95rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  backdrop-filter: blur(10px);
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.25);
+    transform: translateY(-2px);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+
+  svg {
+    flex-shrink: 0;
   }
 }
 
@@ -194,6 +236,10 @@
     }
   }
 
+  .navigation {
+    display: none;
+  }
+
   .connectButton {
     padding: 0.6rem 1.2rem;
     font-size: 0.9rem;
@@ -212,5 +258,16 @@
   .disconnectButton {
     padding: 0.4rem 1rem;
     font-size: 0.85rem;
+  }
+}
+
+@media (max-width: 1024px) {
+  .navLink {
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+    
+    span {
+      display: none;
+    }
   }
 }

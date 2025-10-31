@@ -296,6 +296,27 @@
   border-top: 1px solid #e1e8ed;
 }
 
+.footerLeft,
+.footerCenter,
+.footerRight {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.footerCenter {
+  justify-content: center;
+  flex: 1;
+}
+
+.footerLeft {
+  justify-content: flex-start;
+}
+
+.footerRight {
+  justify-content: flex-end;
+}
+
 .likeCount {
   display: flex;
   align-items: center;
@@ -316,6 +337,374 @@
       fill: #e0245e;
     }
   }
+}
+
+.likeButton {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: transparent;
+  border: none;
+  color: #657786;
+  font-size: 15px;
+  cursor: pointer;
+  padding: 8px 12px;
+  border-radius: 20px;
+  transition: all 0.3s ease;
+
+  svg {
+    transition: all 0.3s ease;
+  }
+
+  &:hover {
+    background: rgba(224, 36, 94, 0.1);
+    color: #e0245e;
+    
+    svg {
+      stroke: #e0245e;
+    }
+  }
+
+  &.liked {
+    color: #e0245e;
+
+    svg {
+      stroke: #e0245e;
+      fill: #e0245e;
+      animation: heartBeat 0.3s ease;
+    }
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+@keyframes heartBeat {
+  0%, 100% {
+    transform: scale(1);
+  }
+  25% {
+    transform: scale(1.3);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  75% {
+    transform: scale(1.2);
+  }
+}
+
+.smallSpinner {
+  width: 18px;
+  height: 18px;
+  border: 2px solid #f3f4f6;
+  border-top-color: #1da1f2;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  display: inline-block;
+}
+
+.viewLikesButton {
+  background: transparent;
+  border: none;
+  color: #1da1f2;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 8px 12px;
+  border-radius: 20px;
+  transition: all 0.3s ease;
+
+  &:hover {
+    background: #e8f5fe;
+  }
+}
+
+.commentButton {
+  background: transparent;
+  border: none;
+  color: #657786;
+  cursor: pointer;
+  padding: 8px 12px;
+  border-radius: 20px;
+  transition: all 0.3s ease;
+
+  &:hover {
+    background: #f5f8fa;
+    color: #14171a;
+  }
+}
+
+.viewCommentsButton {
+  background: transparent;
+  border: 1px solid #e6ecf0;
+  color: #14171a;
+  cursor: pointer;
+  padding: 8px 12px;
+  border-radius: 20px;
+  transition: all 0.3s ease;
+
+  &:hover {
+    background: #f5f8fa;
+  }
+}
+
+/* Likes Modal */
+.modalOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  z-index: 2000;
+}
+
+.modalContent {
+  background: white;
+  width: 100%;
+  max-width: 520px;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+  overflow: hidden;
+}
+
+.modalHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  border-bottom: 1px solid #e6ecf0;
+
+  h2 {
+    margin: 0;
+    font-size: 20px;
+    color: #14171a;
+  }
+}
+
+.closeButton {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: #657786;
+  padding: 6px;
+  border-radius: 8px;
+  transition: background 0.2s ease;
+
+  &:hover {
+    background: #f5f8fa;
+  }
+}
+
+.modalBody {
+  max-height: 60vh;
+  overflow: auto;
+}
+
+.commentTextarea {
+  width: 100%;
+  min-height: 120px;
+  border: 1px solid #e6ecf0;
+  border-radius: 10px;
+  padding: 12px;
+  font-size: 15px;
+  resize: vertical;
+  outline: none;
+
+  &:focus {
+    border-color: #1da1f2;
+    box-shadow: 0 0 0 3px rgba(29, 161, 242, 0.15);
+  }
+}
+
+.commentActions {
+  margin-top: 12px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.cancelButton {
+  background: transparent;
+  border: 1px solid #e6ecf0;
+  color: #657786;
+  padding: 8px 14px;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background: #f5f8fa;
+  }
+}
+
+.postButton {
+  background: #1da1f2;
+  color: white;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 20px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background: #1991db;
+    transform: translateY(-1px);
+  }
+
+  &:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+    transform: none;
+  }
+}
+
+.loadingLikes {
+  text-align: center;
+  padding: 40px 20px;
+
+  p {
+    color: #657786;
+    margin-top: 12px;
+  }
+}
+
+.emptyLikes {
+  text-align: center;
+  padding: 40px 20px;
+  color: #657786;
+}
+
+.commentsList {
+  list-style: none;
+  margin: 0;
+  padding: 10px 0;
+}
+
+.commentItem {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px 20px;
+  border-bottom: 1px solid #f0f3f6;
+}
+
+.commentAvatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+}
+
+.commentInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+}
+
+.commentTopRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.commentName {
+  font-weight: 700;
+  color: #14171a;
+}
+
+.commentTime {
+  font-size: 12px;
+  color: #657786;
+}
+
+.commentAddress {
+  font-size: 13px;
+  color: #657786;
+}
+
+.commentText {
+  margin: 6px 0 0;
+  color: #14171a;
+  font-size: 15px;
+  white-space: pre-wrap;
+}
+
+.likesList {
+  list-style: none;
+  margin: 0;
+  padding: 10px 0;
+}
+
+.likeItem {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 20px;
+  border-bottom: 1px solid #f0f3f6;
+}
+
+.likerAvatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+}
+
+.likerInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.likerTopRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.likerName {
+  font-weight: 700;
+  color: #14171a;
+}
+
+.likerTime {
+  font-size: 12px;
+  color: #657786;
+}
+
+.likerAddress {
+  font-size: 13px;
+  color: #657786;
 }
 
 .tweetMeta {
