@@ -31,6 +31,8 @@ const Page = () => {
     const [commentForTweetId, setCommentForTweetId] = useState(null);
     const [commentText, setCommentText] = useState("");
     const [isPostingComment, setIsPostingComment] = useState(false);
+    const [profilePreview, setProfilePreview] = useState(null);
+    const [isLoadingProfile, setIsLoadingProfile] = useState(false);
 
     // Debug: Check contract address
     useEffect(() => {
@@ -132,10 +134,54 @@ const Page = () => {
         return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
     };
 
-    const handleAuthorClick = (authorAddress) => {
-        // Navigate to author's profile or tweet page
-        console.log("View author profile:", authorAddress);
-        // You can add navigation logic here if needed
+    const handleAuthorClick = async (authorAddress, e) => {
+        e.stopPropagation();
+        try {
+            setIsLoadingProfile(true);
+            setProfilePreview({ address: authorAddress, loading: true });
+
+            const provider = new ethers.BrowserProvider(window.ethereum);
+            const twitterContract = new ethers.Contract(contractAddress, abi, provider);
+
+            const profileData = await twitterContract.getProfile(authorAddress);
+            
+            const hasProfile = profileData && profileData[1] && profileData[1].trim() !== "";
+
+            if (hasProfile) {
+                setProfilePreview({
+                    address: authorAddress,
+                    user: profileData[0],
+                    name: profileData[1],
+                    bio: profileData[2],
+                    image: profileData[3],
+                    loading: false
+                });
+            } else {
+                setProfilePreview({
+                    address: authorAddress,
+                    name: `User ${authorAddress.slice(0, 6)}`,
+                    bio: "No bio available",
+                    image: "",
+                    loading: false
+                });
+            }
+            setIsLoadingProfile(false);
+        } catch (error) {
+            console.error("Error fetching profile:", error);
+            setProfilePreview({
+                address: authorAddress,
+                name: `User ${authorAddress.slice(0, 6)}`,
+                bio: "Failed to load profile",
+                image: "",
+                loading: false
+            });
+            setIsLoadingProfile(false);
+        }
+    };
+
+    const closeProfilePreview = () => {
+        setProfilePreview(null);
+        setIsLoadingProfile(false);
     };
 
     const openLikesModal = async (tweetId) => {
@@ -466,7 +512,7 @@ const Page = () => {
                                 <div className={styles.tweetHeader}>
                                     <div 
                                         className={styles.authorInfo}
-                                        onClick={() => handleAuthorClick(tweet.author)}
+                                        onClick={(e) => handleAuthorClick(tweet.author, e)}
                                     >
                                         <div className={styles.avatar}>
                                             {userProfiles[tweet.author]?.image ? (
@@ -713,6 +759,51 @@ const Page = () => {
                                 </button>
                             </div>
                         </div>
+                    </div>
+                </div>
+            )}
+            {profilePreview && (
+                <div className={styles.profilePreviewOverlay} onClick={closeProfilePreview}>
+                    <div className={styles.profilePreviewCard} onClick={(e) => e.stopPropagation()}>
+                        {profilePreview.loading ? (
+                            <div className={styles.loadingProfile}>
+                                <div className={styles.spinner}></div>
+                                <p>Loading profile...</p>
+                            </div>
+                        ) : (
+                            <>
+                                <button onClick={closeProfilePreview} className={styles.closePreviewButton} aria-label="Close profile preview">
+                                    <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        width="20"
+                                        height="20"
+                                        viewBox="0 0 24 24"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        strokeWidth="2"
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                    >
+                                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                                    </svg>
+                                </button>
+                                <div className={styles.profilePreviewAvatar}>
+                                    {profilePreview.image ? (
+                                        <img src={profilePreview.image} alt={profilePreview.name} />
+                                    ) : (
+                                        profilePreview.address.slice(0, 2).toUpperCase()
+                                    )}
+                                </div>
+                                <h3 className={styles.profilePreviewName}>{profilePreview.name}</h3>
+                                <p className={styles.profilePreviewAddress}>
+                                    {profilePreview.address.slice(0, 10)}...{profilePreview.address.slice(-8)}
+                                </p>
+                                {profilePreview.bio && (
+                                    <p className={styles.profilePreviewBio}>{profilePreview.bio}</p>
+                                )}
+                            </>
+                        )}
                     </div>
                 </div>
             )}
